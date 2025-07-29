@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+         <a class="navbar-brand" >
+            <span style="font-weight: 800; font-size: 1.7rem; color: #ffc107;">Safe</span><span
+                style="font-weight: 800; font-size: 1.7rem; color: #ffffff;">Lot</span>
+            <span style="font-size: 0.9rem; color: #e0e0e0; font-weight: 400;"><a class="navbar-brand" >Welcome, {{ user.fullname }}</a></span>
+        </a>
+
+        <!-- <a class="navbar-brand" >Welcome, {{ user.fullname }}</a> -->
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Parking History -->
+    <div class="container mb-5">
+        <h2>Parking History</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Location</th>
+                        <th>Vehicle No</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.id }}</td>
+                        <td>{{ booking.spot.lot.lot_name }}</td>
+                        <td>{{ booking.vehicle_number }}</td>
+                        <td>{{ booking.booking_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            {% if booking.status == 'Parked' %}
+                            <span class="badge bg-warning text-dark">Parked</span>
+                            {% else %}
+                            <span class="badge bg-success">Out</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if booking.status == 'Parked' %}
+                            <form method="POST" action="{{ url_for('release_spot',  spot_id=booking.spot_id) }}" class="d-inline">
+                                <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                <button class="btn btn-sm btn-danger">Release</button>
+                            </form>
+                            {% else %}
+                            <span class="btn btn-sm btn-outline-secondary disabled">Done</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6">No parking history available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Search Form -->
+    <div class="container mb-4">
+        <form method="GET" action="{{ url_for('user_dashboard') }}" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="search" class="col-form-label fw-bold">Search parking @location/pin code:</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id="search" name="query" class="form-control"
+                    placeholder="Enter location or pin code" value="{{ request.args.get('query', '') }}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- Available Parking Lots -->
+    <div class="container">
+        <h2>Available Parking Lots</h2>
+        <div class="row">
+            {% for lot in lots %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ lot.lot_name }}</h5>
+                        <p class="card-text">
+                            ID: {{lot.id}}<br>
+                            Address: {{ lot.address }}<br>
+                            Pin Code: {{ lot.pin_code }}<br>
+                            Price: ₹{{ lot.price }} per hour<br>
+                            Total Spots: {{ lot.total_spots }}
+                        </p>
+                        <a href="{{ url_for('view_spot', lot_id=lot.id) }}" class="btn btn-success">Book Now</a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    No parking lots available at the moment.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+
+</html>

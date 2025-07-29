@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Parking Lot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>New Parking Lot</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Lot Name</label>
+            <input type="text" class="form-control" name="lot_name"  required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Address</label>
+            <input type="text" class="form-control" name="address"  required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Pincode</label>
+            <input type="text" class="form-control" name="pin_code"  required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Price (per hour)</label>
+            <input type="number" class="form-control" name="price"  required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Total Spots</label>
+            <input type="number" class="form-control" name="total_spots"  required>
+        </div>
+        <button type="submit" class="btn btn-primary"> Add</button>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
