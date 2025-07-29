@@ -17,17 +17,12 @@
 
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
-                <!-- <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Lots</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Spots</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Bookings</a></li> -->
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
         </div>
     </nav>
 
     <div class="container my-4">
-        <!-- <h2 class="mb-4">Admin Summary</h2> -->
         <div class="row g-4">
             <div class="col-md-3">
                 <div class="card text-white bg-primary">
@@ -83,7 +78,7 @@
                         </p>
 
 
-                        <!-- Spots grid -->
+                          <!-- Spots grid  -->
                         <div style="display: flex; flex-wrap: wrap; max-width: 300px;">
                             {% for spot in lot.spots %}
                             {% if spot.status == 'O' %}

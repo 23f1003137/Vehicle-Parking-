@@ -10,7 +10,7 @@ app.secret_key = 'this_is_my_secret_key_123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# db = SQLAlchemy(app)
+
 db.init_app(app)
 
 
@@ -45,9 +45,7 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             print('User created successfully.')
-            return redirect('/login')
-
-              
+            return redirect('/login')            
             
 
 @app.route("/login",methods=['GET','POST'])
@@ -88,13 +86,12 @@ def admin_dashboard():
 
     total_occupied = 0  # Initialize count
 
-    # Attach spot list and occupied count to each lot
+    #  spot list and occupied count to each lot
     for lot in lots:
         lot.spots = ParkingSpot.query.filter_by(lot_id=lot.id).all()
         lot.occupied_count = sum(1 for spot in lot.spots if spot.status == 'O')
         total_occupied += lot.occupied_count  # Accumulate occupied count
 
-    # Optional: Debug print
     for spot in ParkingSpot.query.all():
         print(f"Spot ID: {spot.id}, Lot ID: {spot.lot_id}, Status: {spot.status}")
 
@@ -108,10 +105,6 @@ def admin_dashboard():
         total_spots=sum(len(lot.spots) for lot in lots),
         total_occupied=total_occupied
     )
-
-    
-
-
 
         
 @app.route('/user_dashboard', methods=['GET'])
@@ -250,7 +243,6 @@ def edit_parking_lot(lot_id):
 def delete_parking_lot(lot_id):
     lot = ParkingLot.query.get_or_404(lot_id)
 
-    # Delete associated spots first (if cascading isn't set up)
     for spot in lot.spots:
         db.session.delete(spot)
 
@@ -289,8 +281,6 @@ def book_spot(lot_id, spot_id):
 @app.route('/occupied_parking_spot/<int:spot_id>', methods=['GET'])
 def occupied_parking_spot(spot_id):
     spot = ParkingSpot.query.get_or_404(spot_id)
-
-    # Check your query here — THIS is probably the issue
     booking = Booking.query.filter_by(spot_id=spot_id).order_by(Booking.booking_time.desc()).first()
 
     return render_template('occupied_parking_spot.html', spot=spot, booking=booking)
@@ -369,35 +359,12 @@ def view_deleting_spot(spot_id):
 
     return render_template('view_deleting_spot.html', spot=spot)
 
-# @app.route('/summary')
-# def summary():
-#     if 'user_id' not in session:
-#         return redirect(url_for('login'))
-
-#     user_id = session['user_id']
-
-#     # Explicit joins: ParkingLot -> ParkingSpot -> Booking
-#     booking_summary = db.session.query(
-#         ParkingLot.lot_name,
-#         db.func.count(Booking.id)
-#     ).select_from(Booking)\
-#      .join(ParkingSpot, Booking.spot_id == ParkingSpot.id)\
-#      .join(ParkingLot, ParkingSpot.lot_id == ParkingLot.id)\
-#      .filter(Booking.user_id == user_id)\
-#      .group_by(ParkingLot.lot_name).all()
-
-#     labels = [lot for lot, count in booking_summary]
-#     counts = [count for lot, count in booking_summary]
-
-#     return render_template('summary.html', labels=labels, counts=counts)
-
-
 
 
 @app.route('/logout')
 def logout():
-    session.clear()  # Clears all session data
-    return redirect(url_for('login'))  # Redirects to login page
+    session.clear()  
+    return redirect(url_for('login'))  
 
 
 

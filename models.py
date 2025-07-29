@@ -14,9 +14,6 @@ class User(db.Model):
 
     bookings = db.relationship('Booking', back_populates='user', lazy=True)
 
-    
-
-# Parking Lot Model
 
 class ParkingLot(db.Model):
     __tablename__ = 'parkinglot'
@@ -31,8 +28,6 @@ class ParkingLot(db.Model):
     bookings = db.relationship('Booking', back_populates='lot', lazy=True)
 
 
-# Parking Spot Model
-
 class ParkingSpot(db.Model):
     __tablename__ = 'parkingspot'
     id = db.Column(db.Integer, primary_key=True)
@@ -44,8 +39,6 @@ class ParkingSpot(db.Model):
     lot = db.relationship('ParkingLot', back_populates='spots')
     bookings = db.relationship('Booking', back_populates='spot', lazy=True)
    
-
-# Booking Model (Active/Released spot info)
 
 class Booking(db.Model):
     __tablename__ = 'booking'
